@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+
+    <f:view contentType="text/html">
+        <h:head>
+            <f:facet name="first">
+                <meta content='text/html; charset=UTF-8' http-equiv="Content-Type"/>
+                <title>PrimeFaces</title>
+            </f:facet>
+        </h:head>
+
+        <h:body>
+
+            <p:layout fullPage="true">
+
+                <p:layoutUnit position="north" size="100" resizable="true" closable="true" collapsible="true">
+                    Ejemplo de conexion a base de datos con Java Persistence y Primefaces
+                </p:layoutUnit>
+
+                <p:layoutUnit position="east" size="450" header="Ciudad" collapsible="true">
+                    <h:form prependId="false" id="formulario">
+                        <h:panelGrid columns="2">
+                            <p:outputLabel value="ID"/>
+                            <p:inputText value="#{ciudadManagedBean.id}" disabled="true" />
+                            
+                            <p:outputLabel value="Nombre"/>
+                            <p:inputText value="#{ciudadManagedBean.nombre}" />
+
+
+                        </h:panelGrid>
+                        <h:inputHidden value="#{ciudadManagedBean.id}" />
+                        <p:commandButton style="#{ciudadManagedBean.accion==1?'display: block':'display: none'}" value="Agregar" actionListener="#{ciudadManagedBean.agregar()}" update="tablaciudades" />
+                        <p:commandButton style="#{ciudadManagedBean.accion==2?'display: block':'display: none'}" value="Modificar" actionListener="#{ciudadManagedBean.modificar()}" update="tablaciudades" />
+                    </h:form>
+                </p:layoutUnit>
+
+                <p:layoutUnit position="center">
+                    <h:form prependId="false">
+                        <p:dataTable id="tablaciudades" value="#{ciudadManagedBean.ciudades}" var="ci" selectionMode="single" selection="#{ciudadManagedBean.ciudadSeleccionada}" rowKey="#{ci.idciudad}">
+                            <p:ajax event="rowSelect" listener="#{ciudadManagedBean.seleccionarCiudad()}" update="formulario" />
+                            <p:ajax event="rowUnselect" listener="#{ciudadManagedBean.seleccionarCiudad()}" update="formulario" />
+                            <p:column headerText="ID">
+                                <p:outputLabel value="#{ci.idciudad}" />
+                            </p:column>
+                            <p:column headerText="Nombre">
+                                <p:outputLabel value="#{ci.nombre}" />
+                            </p:column>
+                            <p:column headerText="D">
+                                <p:commandButton icon="ui-icon-trash"  actionListener="#{ciudadManagedBean.eliminarCiudad(ci.idciudad)}" update="@form" >
+                                    <p:confirm header="Confirmation" message="¿Desea eliminar la ciudad?" icon="ui-icon-alert" />
+                                </p:commandButton>
+
+                            </p:column>
+                        </p:dataTable>
+                    </h:form>
+                    <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                        <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check"/>
+                        <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+                    </p:confirmDialog>
+                </p:layoutUnit>
+
+            </p:layout>
+
+        </h:body>
+
+    </f:view>
+</html>
+
